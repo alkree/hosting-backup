@@ -4,6 +4,8 @@ send_to="example@mail.com"
 subject="your hosting backup log"
 backup_source="/home/u/user"
 backup_dest="/home/u/user/backup"
+dbuser="user"
+dbpass="password"
 date=`date '+%Y-%m-%d'`
 list=`ls`
 # Удаляем бэкапы старше 8 дней
@@ -23,12 +25,12 @@ do
 done
 # Бэкапим базы данных MySQL
 echo Backup databases >> $backup_dest/$date.log
-db=`mysql -u user -h localhost -ppassword -Bse 'show databases'`
+db=`mysql -u $dbuser -h localhost -p$dbpass -Bse 'show databases'`
 for n in $db; do
         if [ $n != 'information_schema' ]
         then
 		echo Backup database $n  >> $backup_dest/$date.log
-		/usr/bin/mysqldump -u user -h localhost -ppassword $n | zip > "$backup_dest/$date-$n.zip"
+		/usr/bin/mysqldump -u $dbuser -h localhost -p$dbpass $n | zip > "$backup_dest/$date-$n.zip"
         fi
 done
 
